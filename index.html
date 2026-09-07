@@ -1,421 +1,739 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b1220">
-<title>SERVICE · Process-server attempt / affidavit pack (demo)</title>
-<meta name="description" content="Phone-first educational demo: load a synthetic attempt log → affidavit checklist gap preview → unlock pack CTA. Not legal advice. Does not claim service was legally sufficient.">
-<style>
-:root{
-  --bg:#0b1220;--card:#121a2b;--line:#243049;--ink:#e8eefc;--muted:#9aa8c7;
-  --accent:#5b8cff;--ok:#3dd68c;--warn:#f5a524;--bad:#ff6b6b;
-  --chip:#1a2438;--safe:env(safe-area-inset-bottom,0px);
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  touch-action:manipulation}
-.wrap{max-width:430px;margin:0 auto;min-height:100dvh;
-  padding:12px 12px calc(20px + var(--safe));display:flex;flex-direction:column;gap:10px}
-header.top{padding:8px 4px 2px}
-header.top h1{margin:0;font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
-.mark{width:28px;height:28px;border-radius:8px;background:var(--accent);
-  display:grid;place-items:center;font-size:10px;font-weight:900;color:#fff;flex-shrink:0}
-.sub{color:var(--muted);font-size:13px;margin-top:4px}
-.rules{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.pill{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;
-  background:var(--chip);border:1px solid var(--line);color:var(--muted)}
-.pill.warn{color:var(--warn);border-color:#5a4518}
-.pill.ok{color:var(--ok);border-color:#1f4d3a}
-.filters{position:sticky;top:0;z-index:5;background:rgba(11,18,32,.94);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 0;
-  display:flex;flex-wrap:wrap;gap:8px}
-.chip{min-height:44px;min-width:44px;padding:10px 12px;border-radius:999px;
-  border:1px solid var(--line);background:var(--chip);color:var(--ink);
-  font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation}
-.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.chip:disabled{opacity:.4;cursor:not-allowed}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:none}
-.card.on{display:block}
-.card h2{margin:0 0 6px;font-size:16px}
-.meta{color:var(--muted);font-size:13px;margin-bottom:10px}
-.step{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:6px}
-.actions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.btn{min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--chip);
-  color:var(--ink);font-size:16px;font-weight:800;padding:12px 14px;cursor:pointer;
-  touch-action:manipulation;text-align:center;text-decoration:none;display:block}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.ghost{background:transparent}
-.letter{width:100%;min-height:200px;border-radius:12px;border:1px solid var(--line);
-  background:#0a101c;color:var(--ink);padding:12px;font-size:14px;line-height:1.5;
-  resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.check-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-.check-item{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;
-  background:#152033;border:1px solid var(--line);font-size:14px}
-.check-item .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);
-  flex-shrink:0;margin-top:1px;background:var(--chip)}
-.check-item.on .box{border-color:var(--accent);background:var(--accent)}
-.check-item .label{flex:1;font-weight:600}
-.check-item .cite-hint{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
-.gap-row{padding:12px;border-radius:12px;border:1px solid var(--line);background:#152033;margin-bottom:8px}
-.gap-row.gap{border-color:#5a1f2a;background:#2a1216}
-.gap-row.pass{border-color:#1f4d3a;background:#12261c}
-.gap-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.badge{font-size:11px;font-weight:900;letter-spacing:.04em;padding:4px 8px;border-radius:8px}
-.badge.gap{background:#3a1d10;color:#ffb080}
-.badge.pass{background:#143528;color:var(--ok)}
-.cite{display:inline-block;font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;
-  background:var(--chip);border:1px solid var(--line);color:var(--muted);margin:4px 4px 0 0}
-.gap-body{font-size:13px;color:var(--muted);margin-top:8px}
-.summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.stat{flex:1;min-width:90px;padding:10px;border-radius:12px;background:#152033;
-  border:1px solid var(--line);text-align:center}
-.stat b{display:block;font-size:22px;font-weight:900}
-.stat span{font-size:12px;color:var(--muted);font-weight:700}
-.stat.bad b{color:var(--bad)}
-.stat.ok b{color:var(--ok)}
-.lock-wrap{position:relative;margin-top:14px;border-radius:12px;overflow:hidden;
-  border:1px solid var(--line)}
-.lock-preview{padding:14px;filter:blur(5px);user-select:none;pointer-events:none;
-  opacity:.55;min-height:120px;background:#0a101c;font-size:13px;color:var(--muted);
-  white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:10px;background:rgba(11,18,32,.72);padding:16px;text-align:center}
-.lock-overlay h3{margin:0;font-size:16px}
-.lock-overlay p{margin:0;font-size:13px;color:var(--muted);max-width:280px}
-.hold{margin-top:10px;padding:10px 12px;border-radius:12px;font-size:13px;
-  border:1px dashed var(--line);color:var(--muted);background:#152033}
-.banner{padding:10px 12px;border-radius:12px;font-size:12px;font-weight:700;
-  background:#1a2030;border:1px solid var(--line);color:var(--warn);text-align:center}
-.foot{color:var(--muted);font-size:12px;text-align:center;padding:8px 4px 0}
-.toast{position:fixed;left:50%;bottom:calc(24px + var(--safe));transform:translateX(-50%);
-  background:#1a2438;border:1px solid var(--line);color:var(--ink);padding:10px 16px;
-  border-radius:999px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;
-  transition:opacity .2s;z-index:20;max-width:90vw}
-.toast.on{opacity:1}
-.row-btns{display:flex;gap:8px;flex-wrap:wrap}
-.row-btns .btn{flex:1;min-width:140px}
-.price{font-size:12px;color:var(--muted);margin-top:4px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4f1ea" />
+  <title>SERVICE — Process-server attempt / affidavit pack</title>
+  <meta name="description" content="Educational attempt-log QA: paste notes, see affidavit-field gaps. Not legal advice. Does not claim service was legally sufficient. Pack $19 mailto · Pilot $499." />
+  <meta name="robots" content="index,follow" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <h1><span class="mark">SV</span> SERVICE</h1>
-    <div class="sub">Attempt log → affidavit checklist → pack unlock · educational demo</div>
-    <div class="rules">
-      <span class="pill warn">Not legal advice</span>
-      <span class="pill">Educational demo</span>
-      <span class="pill ok">Synthetic data</span>
+  <header class="site-header">
+    <div class="inner">
+      <a class="mark" href="#what">SERVICE <span class="code">TAIL / SERVICE</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#demo">Demo</a>
+        <a href="#compare">Compare</a>
+        <a href="#suite">Suite</a>
+      </nav>
     </div>
   </header>
 
-  <div class="banner" role="note">Not legal advice · educational demo · synthetic data · does not claim service was legally sufficient</div>
-
-  <div class="filters" role="toolbar" aria-label="Demo steps">
-    <button type="button" class="chip" data-step="log" aria-pressed="true">1 Log</button>
-    <button type="button" class="chip" data-step="checklist" aria-pressed="false" id="chip2" disabled>2 Checklist</button>
-    <button type="button" class="chip" data-step="gaps" aria-pressed="false" id="chip3" disabled>3 Gaps</button>
-    <button type="button" class="chip" data-step="unlock" aria-pressed="false" id="chip4" disabled>4 Unlock</button>
+  <div class="playbook-bar no-print" id="playbook">
+    <div class="inner">
+      <p class="eyebrow">Demo Playbook · Nathan lock</p>
+      <nav class="playbook-links" aria-label="Demo Playbook">
+        <a href="#what">1 What it is</a>
+        <a href="#does">2 What it does</a>
+        <a href="#compare">3 Compare</a>
+        <a href="#roi">4 ROI</a>
+        <a href="#demo">5 Demo</a>
+        <a href="#suite">6 Suite</a>
+        <a href="#rails">7 Rails</a>
+      </nav>
+    </div>
   </div>
 
-  <!-- STEP 1: Attempt log -->
-  <section class="card on" id="log" data-card="log">
-    <div class="step">Load or paste an attempt log</div>
-    <h2>Process-server attempt log</h2>
-    <p class="meta">Use the synthetic sample, or paste your own draft notes. Nothing is uploaded — this demo runs in your browser only.</p>
-    <div class="row-btns">
-      <button type="button" class="btn primary" id="loadSample">Load sample attempt log</button>
-      <button type="button" class="btn ghost" id="clearLog">Clear</button>
-    </div>
-    <textarea class="letter" id="attemptLog" spellcheck="false" placeholder="Paste attempt-log notes here…" aria-label="Attempt log text"></textarea>
-    <div class="actions">
-      <button type="button" class="btn primary" id="toChecklist" disabled>Continue to checklist →</button>
-    </div>
-  </section>
-
-  <!-- STEP 2: Affidavit checklist -->
-  <section class="card" id="checklist" data-card="checklist">
-    <div class="step">What we check against</div>
-    <h2>Affidavit checklist (demo)</h2>
-    <p class="meta">Educational map to common attempt / return fields process servers often document. Not a determination that service was (or was not) legally sufficient.</p>
-    <div class="check-list" id="checkList" aria-label="Checklist items"></div>
-    <div class="actions">
-      <button type="button" class="btn primary" id="runChecklist">Run affidavit checklist</button>
-      <button type="button" class="btn ghost" data-goto="log">← Edit log</button>
-    </div>
-  </section>
-
-  <!-- STEP 3: Gaps -->
-  <section class="card" id="gaps" data-card="gaps">
-    <div class="step">Cited gap preview</div>
-    <h2>Gap report (partial)</h2>
-    <p class="meta">Synthetic findings for demo only. Short chips are educational field reminders — not opinions on legal sufficiency of service.</p>
-    <div class="summary" id="gapSummary"></div>
-    <div id="gapList"></div>
-    <div class="actions">
-      <button type="button" class="btn primary" data-goto="unlock">See pack unlock →</button>
-    </div>
-  </section>
-
-  <!-- STEP 4: Unlock -->
-  <section class="card" id="unlock" data-card="unlock">
-    <div class="step">Unlock pack</div>
-    <h2>Process-server pack</h2>
-    <p class="meta">Preview is watermarked / blurred. Soft unlock via email — Stripe checkout is on HOLD for this magnet demo. DTC toothpick band $8–25.</p>
-
-    <div class="lock-wrap" aria-label="Locked pack preview">
-      <div class="lock-preview" id="fullPreview" aria-hidden="true"></div>
-      <div class="lock-overlay">
-        <h3>Pack locked</h3>
-        <p>Attempt timeline · affidavit field sheet · diligence notes template · export-ready layout</p>
-        <a class="btn primary" id="mailtoCta"
-           href="mailto:settleupcollections@polsia.app?subject=SERVICE%20process-server%20pack&body=Hi%20%E2%80%94%20I%20ran%20the%20SERVICE%20demo%20and%20want%20to%20unlock%20the%20process-server%20attempt%2Faffidavit%20pack%20(%2419).">
-          Unlock pack $19
-        </a>
-        <p class="price">Demo CTA ~$19 · band $8–25 · Stripe HOLD</p>
+  <main>
+    <section class="hero" id="what">
+      <div class="wrap">
+        <p class="eyebrow">Lead magnet · attempt-log QA · not counsel</p>
+        <h1>A field checklist on the attempt notes — before anyone files.</h1>
+        <p class="lede">
+          SERVICE is a cheap educational pack. You paste (or load) a process-server
+          attempt log. The page maps common affidavit fields and marks what looks
+          present or missing. It is paper QA on the notes. It is not a process-server,
+          not a court filing, and it does <strong>not</strong> claim service was legally sufficient.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="#demo">Open the breakable demo</a>
+          <a class="btn btn-ghost" href="#suite">Pack $19 or Pilot $499</a>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="hold">
-      <b>Stripe checkout HOLD</b> — no live payment in this Pages demo.
-      Soft CTA uses mailto placeholder only. Price band for SERVICE packs: ~$8–25.
-    </div>
-
-    <div class="actions">
-      <button type="button" class="btn ghost" data-goto="gaps">← Back to gaps</button>
-      <button type="button" class="btn ghost" id="restart">Restart demo</button>
-    </div>
-  </section>
-
-  <p class="foot">SERVICE · Sassy Tail / Jared · Not legal advice · educational demo · synthetic data<br>
-  Checklist overlay only — does not claim service was legally sufficient, provide skip-trace, or replace counsel.</p>
-</div>
-
-<div class="toast" id="toast" role="status"></div>
-
-<script>
-(function () {
-  const SAMPLE = [
-    '*** SYNTHETIC DEMO ATTEMPT LOG — NOT A REAL CASE ***',
-    '',
-    'Matter: Demo v. Example (fictional)',
-    'Server: A. Demo, process server #0000',
-    'Documents: Summons & Complaint (demo)',
-    '',
-    'ATTEMPT 1',
-    'Date/time: 2026-02-10 · ~6:40 PM',
-    'Address tried: 4500 Fictional Blvd, Sampletown, ST 99999',
-    'Manner: personal service attempt at residence',
-    'Result: No answer. Porch light on. Vehicle in driveway.',
-    'Recipient description: n/a — no contact',
-    'Notes: Left card? No. Diligence: waited ~3 min.',
-    '',
-    'ATTEMPT 2',
-    'Date/time: 2026-02-12 · morning (time not recorded)',
-    'Address tried: same as above',
-    'Manner: knock / wait',
-    'Result: Adult male answered briefly, said “wrong address,” closed door.',
-    'Recipient description: approx mid-30s, no further detail',
-    'Notes: Did not identify self fully. No photo/GPS pin.',
-    '',
-    'ATTEMPT 3',
-    'Date/time: (blank)',
-    'Address tried: (blank — “will try work later”)',
-    'Manner: (not stated)',
-    'Result: not completed in this synthetic log',
-    '',
-    '*** END SYNTHETIC DEMO — fake matter, fake address, fake people ***'
-  ].join('\n');
-
-  /* Educational checklist — common attempt/affidavit fields; no legal-sufficiency claim */
-  const CHECKS = [
-    { id: 'datetime', label: 'Attempt date & time', cite: 'Affidavit field · date/time', hint: 'Each attempt dated with clock time' },
-    { id: 'address', label: 'Address tried', cite: 'Affidavit field · place', hint: 'Full service address on each attempt' },
-    { id: 'manner', label: 'Manner of service / attempt', cite: 'Affidavit field · manner', hint: 'How service was attempted (personal, sub, posted, etc.)' },
-    { id: 'recipient', label: 'Recipient / person description', cite: 'Affidavit field · identity', hint: 'Who was contacted or description if unknown' },
-    { id: 'diligence', label: 'Diligence notes', cite: 'Affidavit field · diligence', hint: 'Wait time, observations, follow-ups' },
-    { id: 'docs', label: 'Documents identified', cite: 'Affidavit field · papers', hint: 'What papers were for service' },
-    { id: 'server_id', label: 'Server identity / license #', cite: 'Affidavit field · server', hint: 'Who attempted service' },
-    { id: 'outcome', label: 'Clear attempt outcome', cite: 'Affidavit field · result', hint: 'Served / not served / refused — factual note only' }
-  ];
-
-  /* Synthetic results: mix of GAP/PASS — never claim legal sufficiency */
-  const RESULTS = {
-    datetime: { status: 'GAP', note: 'Attempt 1 has date/time; Attempt 2 missing clock time; Attempt 3 blank. Incomplete chronology for a clean pack.' },
-    address: { status: 'PASS', note: 'Attempts 1–2 list 4500 Fictional Blvd. (Synthetic address only.)' },
-    manner: { status: 'GAP', note: 'Attempt 1 states personal-service attempt; Attempt 3 manner blank; no consistent manner labels across attempts.' },
-    recipient: { status: 'GAP', note: 'Brief “adult male” note on Attempt 2; no fuller description or name confirmation. Educational flag only.' },
-    diligence: { status: 'GAP', note: 'Sparse diligence (wait ~3 min). No GPS/photo/work-address follow-up recorded in this synthetic log.' },
-    docs: { status: 'PASS', note: 'Header names “Summons & Complaint (demo)” — documents identified at matter level.' },
-    server_id: { status: 'PASS', note: 'Synthetic server name + demo license # present in header.' },
-    outcome: { status: 'GAP', note: 'Outcomes are partial notes only. Pack would still need a clear factual result line per attempt — not a legal-sufficiency opinion.' }
-  };
-
-  const logEl = document.getElementById('attemptLog');
-  const toChecklist = document.getElementById('toChecklist');
-  const checkList = document.getElementById('checkList');
-  const gapList = document.getElementById('gapList');
-  const gapSummary = document.getElementById('gapSummary');
-  const fullPreview = document.getElementById('fullPreview');
-  const toast = document.getElementById('toast');
-  const chips = {
-    log: document.querySelector('[data-step="log"]'),
-    checklist: document.getElementById('chip2'),
-    gaps: document.getElementById('chip3'),
-    unlock: document.getElementById('chip4')
-  };
-
-  let unlockedSteps = { log: true, checklist: false, gaps: false, unlock: false };
-
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('on');
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(() => toast.classList.remove('on'), 1800);
-  }
-
-  function go(step) {
-    if (!unlockedSteps[step]) return;
-    document.querySelectorAll('.card').forEach(c => c.classList.toggle('on', c.dataset.card === step));
-    document.querySelectorAll('.filters .chip').forEach(ch => {
-      const s = ch.dataset.step;
-      ch.setAttribute('aria-pressed', s === step ? 'true' : 'false');
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function syncContinue() {
-    toChecklist.disabled = !logEl.value.trim();
-  }
-
-  function renderChecklist() {
-    checkList.innerHTML = CHECKS.map(c =>
-      `<div class="check-item on" data-id="${c.id}">
-        <div class="box" aria-hidden="true"></div>
-        <div class="label">${c.label}
-          <span class="cite-hint">${c.hint} · ${c.cite}</span>
+    <section class="section" id="rails">
+      <div class="wrap">
+        <div class="rail">
+          <strong>Hard rails.</strong>
+          Not legal advice. Educational demo. Synthetic sample data.
+          A human owns Send / Submit / file — this page does not e-file, mail, or stamp
+          “service complete.” Magnet Stripe <strong>HOLD</strong> on the $19 pack (mailto only).
+          Live Stripe is SettleUp Pilot $499 only.
         </div>
-      </div>`
-    ).join('');
-  }
+      </div>
+    </section>
 
-  function runReport() {
-    unlockedSteps.gaps = true;
-    unlockedSteps.unlock = true;
-    chips.gaps.disabled = false;
-    chips.unlock.disabled = false;
-
-    let gaps = 0, passes = 0;
-    const rows = CHECKS.map(c => {
-      const r = RESULTS[c.id];
-      if (r.status === 'GAP') gaps++; else passes++;
-      return { ...c, ...r };
-    });
-
-    gapSummary.innerHTML =
-      `<div class="stat bad"><b>${gaps}</b><span>GAPs</span></div>` +
-      `<div class="stat ok"><b>${passes}</b><span>PASS</span></div>` +
-      `<div class="stat"><b>${CHECKS.length}</b><span>Checked</span></div>`;
-
-    gapList.innerHTML = rows.map(r =>
-      `<div class="gap-row ${r.status.toLowerCase()}">
-        <div class="gap-head">
-          <strong>${r.label}</strong>
-          <span class="badge ${r.status.toLowerCase()}">${r.status}</span>
+    <section class="section" id="does">
+      <div class="wrap">
+        <p class="eyebrow">What it does</p>
+        <h2>Attempt log in. Field gaps out. You still own the filing.</h2>
+        <p class="lede" style="margin-bottom:1.15rem">
+          Features are checklist hygiene, not a sufficiency opinion. Benefits are
+          fewer bounced affidavits from blank times and blank addresses — if a human
+          actually fills the gaps.
+        </p>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Features</h3>
+            <ul class="feature-list">
+              <li>Paste notes or load a synthetic three-attempt sample.</li>
+              <li>Eight affidavit-field rows: date/time, address tried, manner, recipient, diligence, papers, server ID, outcome.</li>
+              <li>GAP / PASS chips with educational field labels — not legal cites as holdings.</li>
+              <li>Watermarked pack preview; mailto unlock at $19 (band $8–25).</li>
+              <li>Browser-only. Nothing uploads. Restart returns the desk to empty.</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Benefits (soft)</h3>
+            <ul class="feature-list">
+              <li>See missing clock times and blank attempts before counsel redlines the return.</li>
+              <li>Same job as a sticky checklist — on this log, not a forgotten spreadsheet tab.</li>
+              <li>Refuse on empty or nonsense so the demo does not invent a clean affidavit.</li>
+              <li>Standalone pack if you only want the paper QA; Pilot aisle if you want the suite.</li>
+            </ul>
+          </div>
         </div>
-        <span class="cite">${r.cite}</span>
-        <div class="gap-body">${r.note}</div>
-      </div>`
-    ).join('');
+      </div>
+    </section>
 
-    const lockedBody = [
-      'SERVICE · PROCESS-SERVER PACK (LOCKED PREVIEW)',
-      '==============================================',
-      'File: synthetic-attempt-log-demo.txt',
-      'Engine: educational affidavit field checklist',
-      '',
-      'ATTEMPT TIMELINE (blurred)',
-      '  #1  2026-02-10 18:40  residence  — incomplete fields',
-      '  #2  2026-02-12 ??:??  residence  — time GAP',
-      '  #3  (blank)                       — incomplete',
-      '',
-      'AFFIDAVIT FIELD SHEET (blurred)',
-      '  · Date/time completeness ...... GAP',
-      '  · Address tried ............... PASS (synthetic)',
-      '  · Manner labels ............... GAP',
-      '  · Recipient description ....... GAP',
-      '  · Diligence notes ............. GAP',
-      '',
-      'DISCLAIMER (always)',
-      '  Educational pack only — NOT legal advice.',
-      '  Does NOT claim service was legally sufficient.',
-      '',
-      'EXPORT: layout watermarked until unlock'
-    ].join('\n');
-    fullPreview.textContent = lockedBody;
+    <section class="section" id="compare">
+      <div class="wrap-wide">
+        <p class="eyebrow">Honest compare · educational QA only</p>
+        <h2>Next to process-server tools and spreadsheet checklists — not above them</h2>
+        <p class="lede">
+          Serve platforms already run the job. Affidavit templates already print blanks.
+          Spreadsheets already hold a list. SERVICE does not replace those desks. It is
+          an attempt-log field QA overlay. It does not determine that service was
+          (or was not) legally sufficient.
+        </p>
 
-    showToast('Checklist complete · ' + gaps + ' gaps');
-    go('gaps');
-  }
+        <div class="compare-scroll" style="overflow-x:auto">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th scope="col">On the desk today</th>
+                <th scope="col">What it already does</th>
+                <th scope="col">Honest limit</th>
+                <th scope="col">SERVICE pack (this page)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="who">Process-server platforms</td>
+                <td>Jobs, GPS, photos, generated affidavits — the operational system of record.</td>
+                <td>SoR is not a “was this legally sufficient?” stamp. SERVICE is not that SoR.</td>
+                <td>We do not dispatch servers, store GPS, or file returns. Paper QA only.</td>
+              </tr>
+              <tr>
+                <td class="who">Affidavit form packs</td>
+                <td>Blank fields ready for a notary / filing packet.</td>
+                <td>A blank form does not read the notes you already typed.</td>
+                <td>We read this log for missing fields. We do not produce a sworn return.</td>
+              </tr>
+              <tr>
+                <td class="who">Spreadsheet checklists</td>
+                <td>Cheap, officer-owned, no vendor lock.</td>
+                <td>Rows drift. Easy to skip. No blotter on <em>this</em> attempt log.</td>
+                <td>Same job, live on these notes — not a prettier spreadsheet product.</td>
+              </tr>
+              <tr class="ours">
+                <td class="who">SERVICE pack</td>
+                <td>Educational GAP / PASS on common affidavit fields.</td>
+                <td>Heuristic only. No sufficiency claim. No skip-trace. No e-file.</td>
+                <td>Standalone $19 mailto, or add to SettleUp Pilot $499. Dual-mode, not a new brand.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-  document.getElementById('loadSample').addEventListener('click', () => {
-    logEl.value = SAMPLE;
-    syncContinue();
-    unlockedSteps.checklist = true;
-    chips.checklist.disabled = false;
-    showToast('Sample loaded · synthetic');
-  });
+        <div class="compare-cards">
+          <article class="compare-card">
+            <h3>Process-server platforms</h3>
+            <dl>
+              <dt>Already does</dt>
+              <dd>Jobs, GPS, photos, generated affidavits — the operational SoR.</dd>
+              <dt>Honest limit</dt>
+              <dd>SoR is not a legal-sufficiency stamp. SERVICE is not that SoR.</dd>
+              <dt>This pack</dt>
+              <dd>No dispatch, no GPS store, no filing. Paper QA only.</dd>
+            </dl>
+          </article>
+          <article class="compare-card">
+            <h3>Affidavit form packs</h3>
+            <dl>
+              <dt>Already does</dt>
+              <dd>Blank fields ready for a notary / filing packet.</dd>
+              <dt>Honest limit</dt>
+              <dd>A blank form does not read the notes you already typed.</dd>
+              <dt>This pack</dt>
+              <dd>Reads this log for missing fields. Does not produce a sworn return.</dd>
+            </dl>
+          </article>
+          <article class="compare-card">
+            <h3>Spreadsheet checklists</h3>
+            <dl>
+              <dt>Already does</dt>
+              <dd>Cheap, officer-owned, no vendor lock.</dd>
+              <dt>Honest limit</dt>
+              <dd>Rows drift. Easy to skip. No blotter on this attempt log.</dd>
+              <dt>This pack</dt>
+              <dd>Same job, live on these notes — not a prettier spreadsheet product.</dd>
+            </dl>
+          </article>
+          <article class="compare-card ours">
+            <h3>SERVICE pack</h3>
+            <dl>
+              <dt>Already does</dt>
+              <dd>Educational GAP / PASS on common affidavit fields.</dd>
+              <dt>Honest limit</dt>
+              <dd>Heuristic only. No sufficiency claim. No skip-trace. No e-file.</dd>
+              <dt>This pack</dt>
+              <dd>Standalone $19 mailto, or add to SettleUp Pilot $499.</dd>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
 
-  document.getElementById('clearLog').addEventListener('click', () => {
-    logEl.value = '';
-    syncContinue();
-  });
+    <section class="section" id="demo">
+      <div class="wrap">
+        <div class="break-callout">
+          <p class="eyebrow" style="margin:0 0 0.4rem">Breakable path · refuse is the feature</p>
+          <h2 style="margin-bottom:0.45rem">Try the happy path. Then try to break it.</h2>
+          <p class="small muted" style="margin:0 0 0.85rem">
+            Empty paste and nonsense text are supposed to <strong>REFUSE</strong> — loud, no invented
+            times or addresses. Restart clears the desk. That is resilience, not a crash.
+          </p>
+          <div class="btn-row" style="margin:0">
+            <button type="button" class="btn" id="btn-happy">Happy path · sample</button>
+            <button type="button" class="btn btn-ghost" id="btn-break-empty">Break: empty</button>
+            <button type="button" class="btn btn-ghost" id="btn-break-nonsense">Break: nonsense</button>
+            <button type="button" class="btn btn-ghost" id="btn-restart">Restart</button>
+          </div>
+        </div>
 
-  logEl.addEventListener('input', () => {
-    syncContinue();
-    if (logEl.value.trim()) {
+        <div class="demo-steps" role="toolbar" aria-label="Demo steps">
+          <button type="button" class="chip-step" data-step="log" aria-pressed="true">1 Log</button>
+          <button type="button" class="chip-step" data-step="checklist" aria-pressed="false" id="chip2" disabled>2 Checklist</button>
+          <button type="button" class="chip-step" data-step="gaps" aria-pressed="false" id="chip3" disabled>3 Gaps</button>
+          <button type="button" class="chip-step" data-step="unlock" aria-pressed="false" id="chip4" disabled>4 Unlock</button>
+        </div>
+
+        <div class="demo-shell" style="margin-top:1rem">
+          <section class="demo-card on" id="log" data-card="log">
+            <p class="eyebrow">Load or paste an attempt log</p>
+            <h2>Process-server attempt log</h2>
+            <p class="small muted">Use the synthetic sample, or paste draft notes. Nothing is uploaded — this demo runs in your browser.</p>
+            <div class="btn-row" style="margin-top:0.75rem">
+              <button type="button" class="btn" id="loadSample">Load sample attempt log</button>
+              <button type="button" class="btn btn-ghost" id="clearLog">Clear</button>
+            </div>
+            <textarea class="letter" id="attemptLog" spellcheck="false" placeholder="Paste attempt-log notes here…" aria-label="Attempt log text"></textarea>
+            <div id="logRefuse" hidden></div>
+            <div class="btn-row">
+              <button type="button" class="btn" id="toChecklist" disabled>Continue to checklist →</button>
+            </div>
+          </section>
+
+          <section class="demo-card" id="checklist" data-card="checklist">
+            <p class="eyebrow">What we check against</p>
+            <h2>Affidavit checklist (demo)</h2>
+            <p class="small muted">Educational map to common attempt / return fields. Not a determination that service was legally sufficient.</p>
+            <div class="check-list" id="checkList" aria-label="Checklist items"></div>
+            <div class="btn-row">
+              <button type="button" class="btn" id="runChecklist">Run affidavit checklist</button>
+              <button type="button" class="btn btn-ghost" data-goto="log">← Edit log</button>
+            </div>
+          </section>
+
+          <section class="demo-card" id="gaps" data-card="gaps">
+            <p class="eyebrow">Cited gap preview</p>
+            <h2>Gap report (partial)</h2>
+            <p class="small muted">Findings are educational field reminders — not opinions on legal sufficiency of service.</p>
+            <div id="refuseBox"></div>
+            <div class="summary" id="gapSummary"></div>
+            <div id="gapList"></div>
+            <div class="btn-row">
+              <button type="button" class="btn" data-goto="unlock" id="toUnlock">See pack unlock →</button>
+              <button type="button" class="btn btn-ghost" data-goto="log">← Edit log</button>
+            </div>
+          </section>
+
+          <section class="demo-card" id="unlock" data-card="unlock">
+            <p class="eyebrow">Unlock pack</p>
+            <h2>Process-server pack</h2>
+            <p class="small muted">Preview is watermarked. Soft unlock via email — Stripe checkout is on HOLD for this magnet. DTC band $8–25.</p>
+            <div class="lock-wrap" aria-label="Locked pack preview">
+              <div class="lock-preview" id="fullPreview" aria-hidden="true"></div>
+              <div class="lock-overlay">
+                <h3>Pack locked</h3>
+                <p>Attempt timeline · affidavit field sheet · diligence notes template · export-ready layout</p>
+                <a class="btn" id="mailtoCta"
+                   href="mailto:settleupcollections@polsia.app?subject=SERVICE%20process-server%20pack%20%2419&body=Hi%20%E2%80%94%20I%20ran%20the%20SERVICE%20demo%20and%20want%20to%20unlock%20the%20process-server%20attempt%2Faffidavit%20pack%20(%2419%2C%20band%20%248%E2%80%9325).%0A%0ACompany%3A%20%0AContact%3A%20">
+                  Unlock pack $19 (mailto)
+                </a>
+                <p class="small muted">Demo CTA $19 · band $8–25 · Magnet Stripe HOLD</p>
+                <a class="btn btn-ghost" href="https://buy.stripe.com/dRm00j0GG53F8dVfO17Vm03" target="_blank" rel="noopener noreferrer">Add to Pilot aisle · $499</a>
+              </div>
+            </div>
+            <div class="assumption" style="margin-top:1rem">
+              <strong>Stripe checkout HOLD</strong> — no live payment on the pack. Soft CTA is mailto only.
+              Dual-mode: standalone pack <em>or</em> SettleUp Pilot $499 add-to-cart.
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-ghost" data-goto="gaps">← Back to gaps</button>
+              <button type="button" class="btn btn-ghost" id="restart">Restart demo</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="roi">
+      <div class="wrap">
+        <p class="eyebrow">ROI / ROT · labeled assumptions · soft filter</p>
+        <h2>$19 pack as return-on-time — not a kill claim</h2>
+        <p class="lede">
+          Soft framing only. The pack sits in an $8–25 toothpick band. Featured CTA is $19.
+          Multipliers stay on this block, not in the hero.
+        </p>
+        <div class="assumption">
+          <p class="eyebrow" style="margin:0 0 0.4rem">Labeled assumption · not a guarantee</p>
+          <p style="margin:0">
+            If a bounced affidavit costs <strong>40 minutes</strong> of server or paralegal redo
+            at a fully loaded <strong>$45/hr</strong> = <strong>$30</strong> desk time, vs pack
+            <strong>$19</strong> → about <strong>1.6×</strong> return-on-time.
+            A <strong>3×</strong> claim only holds if about <strong>75 minutes</strong> are
+            actually saved at that rate. Hours and rates are assumptions you can change.
+            This does <strong>not</strong> price a quashed service, a default, or “service
+            that was legally sufficient.” Soft filter only.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="suite">
+      <div class="wrap">
+        <p class="eyebrow">Suite line · dual-mode</p>
+        <h2>Standalone pack — or add it to SettleUp Pilot</h2>
+        <p class="muted small" style="margin-bottom:1.25rem">
+          Two live paths. The $19 pack is the magnet funnel (mailto · Stripe HOLD).
+          The suite aisle is SettleUp Pilot $499 add-to-cart. Not a competing brand.
+        </p>
+        <div class="grid-2">
+          <div class="price-card">
+            <p class="eyebrow" style="margin:0">Standalone · magnet funnel</p>
+            <div class="amount">$19</div>
+            <p class="small muted">One process-server pack. Band $8–25. Magnet Stripe HOLD — mailto is the live pack path.</p>
+            <ul>
+              <li>Attempt-log field sheet on one matter</li>
+              <li>Educational GAP / PASS — no sufficiency claim</li>
+              <li>Human still files the affidavit</li>
+            </ul>
+            <a class="btn btn-ghost"
+               href="mailto:settleupcollections@polsia.app?subject=SERVICE%20process-server%20pack%20%2419&body=Hi%20%E2%80%94%20I%20want%20the%20SERVICE%20process-server%20attempt%2Faffidavit%20pack%20(%2419).%0A%0ACompany%3A%20%0AContact%3A%20">
+              Unlock pack $19 (mailto)
+            </a>
+            <p class="small muted" style="margin:0">No SERVICE pack Payment Link. Do not invent one.</p>
+          </div>
+          <div class="price-card featured">
+            <p class="eyebrow" style="margin:0">Suite · SettleUp Pilot</p>
+            <div class="amount">$499<span style="font-size:1rem;font-weight:600">/mo</span></div>
+            <p class="small muted">Live add-to-cart. SERVICE attaches as attempt-log QA on the Pilot aisle — it does not replace Pilot.</p>
+            <ul>
+              <li>Pilot refuse-gate console</li>
+              <li>Add SERVICE as the process-server pack module</li>
+              <li>Human owns Send / Submit on every path</li>
+            </ul>
+            <a class="btn" href="https://buy.stripe.com/dRm00j0GG53F8dVfO17Vm03" target="_blank" rel="noopener noreferrer">
+              Add to Pilot aisle · $499
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="disclaimer">
+      <div class="wrap">
+        <div class="disclaimer-box">
+          <h3>Disclaimer</h3>
+          <p>
+            SERVICE is an educational / QA checklist product for process-server attempt notes.
+            It is <strong>not legal advice</strong> and does not create an attorney–client
+            relationship. Output is not a determination that service was legally sufficient,
+            complete, or safe to file. We do not provide skip-trace, recovery tooling, or
+            violence claims. We do not e-file, mail, or auto-submit. A human owns Send / Submit
+            and any affidavit filing. Sample logs use fake matters, fake addresses, and fake
+            people. Magnet Stripe is on HOLD for the $19 pack. You remain responsible for your
+            own compliance program, licenses, and counsel review.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <div><strong style="color:var(--ink)">SERVICE</strong> · Sassy Tail / Jared · SettleUp suite magnet</div>
+      <div>Contact: <a href="mailto:settleupcollections@polsia.app">settleupcollections@polsia.app</a></div>
+      <div>Not legal advice · synthetic data · human owns Submit · Magnet Stripe HOLD on pack · Pilot $499 live</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+  (function () {
+    const SAMPLE = [
+      "*** SYNTHETIC DEMO ATTEMPT LOG — NOT A REAL CASE ***",
+      "",
+      "Matter: Demo v. Example (fictional)",
+      "Server: A. Demo, process server #0000",
+      "Documents: Summons & Complaint (demo)",
+      "",
+      "ATTEMPT 1",
+      "Date/time: 2026-02-10 · ~6:40 PM",
+      "Address tried: 4500 Fictional Blvd, Sampletown, ST 99999",
+      "Manner: personal service attempt at residence",
+      "Result: No answer. Porch light on. Vehicle in driveway.",
+      "Recipient description: n/a — no contact",
+      "Notes: Left card? No. Diligence: waited ~3 min.",
+      "",
+      "ATTEMPT 2",
+      "Date/time: 2026-02-12 · morning (time not recorded)",
+      "Address tried: same as above",
+      "Manner: knock / wait",
+      "Result: Adult male answered briefly, said “wrong address,” closed door.",
+      "Recipient description: approx mid-30s, no further detail",
+      "Notes: Did not identify self fully. No photo/GPS pin.",
+      "",
+      "ATTEMPT 3",
+      "Date/time: (blank)",
+      "Address tried: (blank — “will try work later”)",
+      "Manner: (not stated)",
+      "Result: not completed in this synthetic log",
+      "",
+      "*** END SYNTHETIC DEMO — fake matter, fake address, fake people ***"
+    ].join("\n");
+
+    const NONSENSE = "asdf qwerty lorem 123 hello world this is not a log";
+
+    const CHECKS = [
+      { id: "datetime", label: "Attempt date & time", cite: "Affidavit field · date/time", hint: "Each attempt dated with clock time" },
+      { id: "address", label: "Address tried", cite: "Affidavit field · place", hint: "Full service address on each attempt" },
+      { id: "manner", label: "Manner of service / attempt", cite: "Affidavit field · manner", hint: "How service was attempted (personal, sub, posted, etc.)" },
+      { id: "recipient", label: "Recipient / person description", cite: "Affidavit field · identity", hint: "Who was contacted or description if unknown" },
+      { id: "diligence", label: "Diligence notes", cite: "Affidavit field · diligence", hint: "Wait time, observations, follow-ups" },
+      { id: "docs", label: "Documents identified", cite: "Affidavit field · papers", hint: "What papers were for service" },
+      { id: "server_id", label: "Server identity / license #", cite: "Affidavit field · server", hint: "Who attempted service" },
+      { id: "outcome", label: "Clear attempt outcome", cite: "Affidavit field · result", hint: "Served / not served / refused — factual note only" }
+    ];
+
+    const SAMPLE_RESULTS = {
+      datetime: { status: "GAP", note: "Attempt 1 has date/time; Attempt 2 missing clock time; Attempt 3 blank. Incomplete chronology for a clean pack." },
+      address: { status: "PASS", note: "Attempts 1–2 list 4500 Fictional Blvd. (Synthetic address only.)" },
+      manner: { status: "GAP", note: "Attempt 1 states personal-service attempt; Attempt 3 manner blank; no consistent manner labels across attempts." },
+      recipient: { status: "GAP", note: "Brief “adult male” note on Attempt 2; no fuller description or name confirmation. Educational flag only." },
+      diligence: { status: "GAP", note: "Sparse diligence (wait ~3 min). No GPS/photo/work-address follow-up recorded in this synthetic log." },
+      docs: { status: "PASS", note: "Header names “Summons & Complaint (demo)” — documents identified at matter level." },
+      server_id: { status: "PASS", note: "Synthetic server name + demo license # present in header." },
+      outcome: { status: "GAP", note: "Outcomes are partial notes only. Pack would still need a clear factual result line per attempt — not a legal-sufficiency opinion." }
+    };
+
+    const logEl = document.getElementById("attemptLog");
+    const toChecklist = document.getElementById("toChecklist");
+    const checkList = document.getElementById("checkList");
+    const gapList = document.getElementById("gapList");
+    const gapSummary = document.getElementById("gapSummary");
+    const fullPreview = document.getElementById("fullPreview");
+    const toast = document.getElementById("toast");
+    const refuseBox = document.getElementById("refuseBox");
+    const logRefuse = document.getElementById("logRefuse");
+    const chips = {
+      log: document.querySelector('[data-step="log"]'),
+      checklist: document.getElementById("chip2"),
+      gaps: document.getElementById("chip3"),
+      unlock: document.getElementById("chip4")
+    };
+
+    let unlockedSteps = { log: true, checklist: false, gaps: false, unlock: false };
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("on");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(function () { toast.classList.remove("on"); }, 2000);
+    }
+
+    function stampHtml(title, body) {
+      return '<div class="refuse-stamp" role="status"><span>' + title + "</span><p>" + body + "</p></div>";
+    }
+
+    function classifyLog(raw) {
+      var t = raw.trim();
+      if (!t) return { mode: "empty" };
+      var words = t.split(/\s+/).filter(Boolean);
+      var hasDate = /\b(20\d{2}|\d{1,2}[\/\-]\d{1,2}(?:[\/\-]\d{2,4})?|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{1,2})\b/i.test(t);
+      var hasAddress = /\b(\d{2,5}\s+\w+|blvd|boulevard|street|\bst\.|avenue|ave\.|road|\brd\.|drive|\bdr\.|lane|\bln\.|way|court|\bct\.)\b/i.test(t);
+      var hasAttempt = /\b(attempt|served|service|knock|residence|summons|complaint|affidavit|process\s*server|personal service|diligence)\b/i.test(t);
+      var isSample = /SYNTHETIC DEMO ATTEMPT LOG/i.test(t);
+      if (isSample) return { mode: "sample", text: t };
+      if (words.length < 14 || (!hasDate && !hasAddress && !hasAttempt)) {
+        return { mode: "nonsense", words: words.length, text: t };
+      }
+      return {
+        mode: "custom",
+        text: t,
+        datetime: hasDate && /\b(\d{1,2}:\d{2}|\d{1,2}\s*(am|pm)|morning|evening|afternoon)\b/i.test(t),
+        dateOnly: hasDate,
+        address: hasAddress,
+        manner: /\b(personal|substituted|post(ed|ing)?|nail|mail|knock|residence|workplace)\b/i.test(t),
+        recipient: /\b(male|female|adult|person|recipient|defendant|occupant|described)\b/i.test(t),
+        diligence: /\b(wait|diligence|gps|photo|vehicle|porch|card|follow[- ]?up)\b/i.test(t),
+        docs: /\b(summons|complaint|subpoena|papers|documents|notice)\b/i.test(t),
+        server: /\b(server|license|#\d{2,}|\blic\b)\b/i.test(t),
+        outcome: /\b(no answer|served|not served|refused|unable|completed|closed door)\b/i.test(t)
+      };
+    }
+
+    function resultsFor(classif) {
+      if (classif.mode === "sample") return SAMPLE_RESULTS;
+      function row(ok, passNote, gapNote) {
+        return ok
+          ? { status: "PASS", note: passNote }
+          : { status: "GAP", note: gapNote };
+      }
+      return {
+        datetime: row(classif.datetime, "A date and a clock-ish time appear in the pasted notes.", "Date and/or clock time incomplete across attempts."),
+        address: row(classif.address, "An address-like line is present.", "No full address tried on each attempt."),
+        manner: row(classif.manner, "A manner word is present (educational match only).", "Manner of attempt not labeled consistently."),
+        recipient: row(classif.recipient, "A person description token is present.", "Recipient / person description is thin or missing."),
+        diligence: row(classif.diligence, "A diligence token is present.", "Diligence notes are sparse or absent."),
+        docs: row(classif.docs, "Papers / documents are named at least once.", "Documents for service are not identified."),
+        server_id: row(classif.server, "A server identity token is present.", "Server identity / license line is missing."),
+        outcome: row(classif.outcome, "A factual outcome token is present.", "Clear attempt outcome line is missing.")
+      };
+    }
+
+    function go(step) {
+      if (!unlockedSteps[step]) return;
+      document.querySelectorAll(".demo-card").forEach(function (c) {
+        c.classList.toggle("on", c.dataset.card === step);
+      });
+      document.querySelectorAll(".demo-steps .chip-step").forEach(function (ch) {
+        ch.setAttribute("aria-pressed", ch.dataset.step === step ? "true" : "false");
+      });
+      document.getElementById("demo").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function syncContinue() {
+      toChecklist.disabled = !logEl.value.trim();
+    }
+
+    function renderChecklist() {
+      checkList.innerHTML = CHECKS.map(function (c) {
+        return '<div class="check-item on" data-id="' + c.id + '">' +
+          '<div class="box" aria-hidden="true"></div>' +
+          '<div class="label">' + c.label +
+          '<span class="cite-hint">' + c.hint + " · " + c.cite + "</span></div></div>";
+      }).join("");
+    }
+
+    function resetDesk() {
+      logEl.value = "";
+      syncContinue();
+      unlockedSteps = { log: true, checklist: false, gaps: false, unlock: false };
+      chips.checklist.disabled = true;
+      chips.gaps.disabled = true;
+      chips.unlock.disabled = true;
+      gapList.innerHTML = "";
+      gapSummary.innerHTML = "";
+      refuseBox.innerHTML = "";
+      logRefuse.hidden = true;
+      logRefuse.innerHTML = "";
+      fullPreview.textContent = "";
+      go("log");
+    }
+
+    function refuseEmpty() {
+      logEl.value = "";
+      syncContinue();
+      logRefuse.hidden = false;
+      logRefuse.innerHTML = stampHtml(
+        "REFUSE · empty",
+        "Nothing to check. Paste attempt notes or load the synthetic sample. We will not invent a date, address, or outcome."
+      );
+      unlockedSteps.checklist = false;
+      unlockedSteps.gaps = false;
+      unlockedSteps.unlock = false;
+      chips.checklist.disabled = true;
+      chips.gaps.disabled = true;
+      chips.unlock.disabled = true;
+      go("log");
+      showToast("REFUSE · empty paste");
+    }
+
+    function refuseNonsense(text) {
+      logEl.value = text == null ? NONSENSE : text;
+      syncContinue();
+      unlockedSteps.checklist = true;
+      unlockedSteps.gaps = true;
+      unlockedSteps.unlock = false;
+      chips.checklist.disabled = false;
+      chips.gaps.disabled = false;
+      chips.unlock.disabled = true;
+      refuseBox.innerHTML = stampHtml(
+        "REFUSE · not an attempt log",
+        "Heuristic found no date, address, or attempt language. SERVICE will not invent affidavit fields from nonsense. Human still owns Submit."
+      );
+      gapSummary.innerHTML = "";
+      gapList.innerHTML = "";
+      go("gaps");
+      showToast("REFUSE · nonsense");
+    }
+
+    function runReport() {
+      var classif = classifyLog(logEl.value);
+      if (classif.mode === "empty") {
+        refuseEmpty();
+        return;
+      }
+      if (classif.mode === "nonsense") {
+        refuseNonsense(classif.text);
+        return;
+      }
+
+      unlockedSteps.gaps = true;
+      unlockedSteps.unlock = true;
+      chips.gaps.disabled = false;
+      chips.unlock.disabled = false;
+      refuseBox.innerHTML = "";
+
+      var results = resultsFor(classif);
+      var gaps = 0, passes = 0;
+      var rows = CHECKS.map(function (c) {
+        var r = results[c.id];
+        if (r.status === "GAP") gaps++; else passes++;
+        return Object.assign({}, c, r);
+      });
+
+      gapSummary.innerHTML =
+        '<div class="stat bad"><b>' + gaps + "</b><span>GAPs</span></div>" +
+        '<div class="stat ok"><b>' + passes + "</b><span>PASS</span></div>" +
+        '<div class="stat"><b>' + CHECKS.length + "</b><span>Checked</span></div>";
+
+      gapList.innerHTML = rows.map(function (r) {
+        return '<div class="gap-row ' + r.status.toLowerCase() + '">' +
+          '<div class="gap-head"><strong>' + r.label + "</strong>" +
+          '<span class="badge ' + r.status.toLowerCase() + '">' + r.status + "</span></div>" +
+          '<span class="cite">' + r.cite + "</span>" +
+          '<div class="gap-body">' + r.note + "</div></div>";
+      }).join("");
+
+      fullPreview.textContent = [
+        "SERVICE · PROCESS-SERVER PACK (LOCKED PREVIEW)",
+        "==============================================",
+        "Engine: educational affidavit field checklist",
+        "",
+        "AFFIDAVIT FIELD SHEET (blurred)",
+        "  · Date/time completeness ...... see GAP/PASS",
+        "  · Address tried ............... see GAP/PASS",
+        "  · Manner labels ............... see GAP/PASS",
+        "",
+        "DISCLAIMER (always)",
+        "  Educational pack only — NOT legal advice.",
+        "  Does NOT claim service was legally sufficient.",
+        "  Human owns Send / Submit / file.",
+        "",
+        "EXPORT: layout watermarked until unlock"
+      ].join("\n");
+
+      showToast("Checklist complete · " + gaps + " gaps");
+      go("gaps");
+    }
+
+    function loadSample() {
+      logEl.value = SAMPLE;
+      logRefuse.hidden = true;
+      logRefuse.innerHTML = "";
+      syncContinue();
       unlockedSteps.checklist = true;
       chips.checklist.disabled = false;
+      showToast("Sample loaded · synthetic");
     }
-  });
 
-  toChecklist.addEventListener('click', () => {
-    unlockedSteps.checklist = true;
-    chips.checklist.disabled = false;
+    document.getElementById("loadSample").addEventListener("click", loadSample);
+
+    document.getElementById("clearLog").addEventListener("click", function () {
+      logEl.value = "";
+      logRefuse.hidden = true;
+      logRefuse.innerHTML = "";
+      syncContinue();
+    });
+
+    logEl.addEventListener("input", function () {
+      syncContinue();
+      if (logEl.value.trim()) {
+        unlockedSteps.checklist = true;
+        chips.checklist.disabled = false;
+        logRefuse.hidden = true;
+      }
+    });
+
+    toChecklist.addEventListener("click", function () {
+      var classif = classifyLog(logEl.value);
+      if (classif.mode === "empty") {
+        refuseEmpty();
+        return;
+      }
+      if (classif.mode === "nonsense") {
+        refuseNonsense(classif.text);
+        return;
+      }
+      unlockedSteps.checklist = true;
+      chips.checklist.disabled = false;
+      renderChecklist();
+      go("checklist");
+    });
+
+    document.getElementById("runChecklist").addEventListener("click", runReport);
+
+    document.getElementById("restart").addEventListener("click", function () {
+      resetDesk();
+      showToast("Demo reset");
+    });
+
+    document.getElementById("btn-restart").addEventListener("click", function () {
+      resetDesk();
+      showToast("Demo reset");
+    });
+
+    document.getElementById("btn-happy").addEventListener("click", function () {
+      loadSample();
+      renderChecklist();
+      unlockedSteps.checklist = true;
+      chips.checklist.disabled = false;
+      go("checklist");
+      runReport();
+    });
+
+    document.getElementById("btn-break-empty").addEventListener("click", refuseEmpty);
+    document.getElementById("btn-break-nonsense").addEventListener("click", refuseNonsense);
+
+    document.querySelectorAll("[data-goto]").forEach(function (btn) {
+      btn.addEventListener("click", function () { go(btn.dataset.goto); });
+    });
+
+    document.querySelectorAll(".demo-steps .chip-step").forEach(function (ch) {
+      ch.addEventListener("click", function () { go(ch.dataset.step); });
+    });
+
     renderChecklist();
-    go('checklist');
-  });
-
-  document.getElementById('runChecklist').addEventListener('click', runReport);
-
-  document.getElementById('restart').addEventListener('click', () => {
-    logEl.value = '';
     syncContinue();
-    unlockedSteps = { log: true, checklist: false, gaps: false, unlock: false };
-    chips.checklist.disabled = true;
-    chips.gaps.disabled = true;
-    chips.unlock.disabled = true;
-    gapList.innerHTML = '';
-    gapSummary.innerHTML = '';
-    go('log');
-    showToast('Demo reset');
-  });
-
-  document.querySelectorAll('[data-goto]').forEach(btn => {
-    btn.addEventListener('click', () => go(btn.dataset.goto));
-  });
-
-  document.querySelectorAll('.filters .chip').forEach(ch => {
-    ch.addEventListener('click', () => go(ch.dataset.step));
-  });
-
-  renderChecklist();
-  syncContinue();
-})();
-</script>
+  })();
+  </script>
 </body>
 </html>
