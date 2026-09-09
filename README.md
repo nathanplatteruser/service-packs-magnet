@@ -31,7 +31,7 @@ Load/paste or load a **synthetic** attempt log → educational **affidavit check
 
 | Path | Role | Checkout |
 |------|------|----------|
-| Pack **$19** (band $8–25) | Magnet funnel | mailto `settleupcollections@polsia.app` — Magnet Stripe **HOLD** |
+| Pack **$19** (band $8–25) | Magnet funnel | mailto `nathanplatter@gmail.com` — Magnet Stripe **HOLD** |
 | SettleUp Pilot **$499** | Suite aisle | live [Pilot Payment Link](https://buy.stripe.com/dRm00j0GG53F8dVfO17Vm03) |
 
 ## Disclaimer (always on-page)
