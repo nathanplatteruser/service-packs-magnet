@@ -1,38 +1,42 @@
-# SERVICE — Process-server attempt / affidavit pack
+# SERVICE - Process-server attempt / affidavit pack
 
 Phone-first **static GitHub Pages** magnet for **Sassy Tail / Jared**. Demo Playbook bar on the public landing.
 
-Load/paste or load a **synthetic** attempt log → educational **affidavit checklist gap report**. Soft CTA to unlock the process-server pack (**$8–25** band; featured **$19** via mailto) **or** add to SettleUp Pilot **$499**.
+Load/paste or load a **synthetic** attempt log → educational **affidavit checklist gap report**. Soft CTA: **Book intro** ([calendly.com/nathanplatter](https://calendly.com/nathanplatter)) or **email** `nathanplatter@gmail.com`.
 
 **Not legal advice. Educational demo. Synthetic data.**
 **Does not claim service was legally sufficient.**
 **Human owns Send / Submit / file.**
+**Magnet Stripe HOLD (off).**
+**No pack dollars. No Pilot dollars. No Soft ROI that implies what Nathan charges.**
 
-## Demo Playbook (Nathan lock) — seven bars on Pages
+## Demo Playbook (Nathan lock) - seven bars on Pages
 
 | # | Bar | On-page |
 |---|-----|---------|
 | 1 | What it is | Plain hero: field checklist on attempt notes, not a process-server |
 | 2 | What it does | Features + soft benefits |
 | 3 | Compare | Honest table vs process-server platforms, affidavit form packs, spreadsheet checklists |
-| 4 | ROI | $19 pack (band $8–25) as ROT with labeled assumptions (soft filter; not in hero) |
+| 4 | Why | Catch blank times / blank addresses before a bounce. Not a kill claim. Not Soft ROI. |
 | 5 | Demo | Breakable: happy path + empty REFUSE + nonsense REFUSE + restart |
-| 6 | Suite | Dual-mode: standalone pack **or** [SettleUp Pilot $499](https://buy.stripe.com/dRm00j0GG53F8dVfO17Vm03) |
+| 6 | Suite | Dual-mode: standalone pack or SettleUp Pilot (Book intro / email only) |
 | 7 | Rails | Human owns Submit · not legal advice · synthetic data · Magnet Stripe HOLD |
 
-## Soft ROI (pricing / ROI block only — labeled assumption)
+## Why (not Soft ROI)
 
-- 40 min redo × $45/hr loaded = $30 desk time vs pack $19 → about **1.6×**
-- A **3×** claim only if about **75 minutes** are actually saved at that rate
-- Does **not** price a quashed service or legal sufficiency
-- Do not put ROI multipliers in the hero
+- Public page does **not** publish Soft ROI, ROT multipliers, desk-rate math, or anything that implies what Nathan charges
+- A bounced affidavit means another pass on the notes. That is desk hygiene, not a priced return
+- Does **not** claim service was legally sufficient
+- Do not put ROI / ROT / dollar math in the hero or anywhere else on this magnet
 
-## Soft CTA
+## Soft CTA (P0 PRICE LOCK · Nathan 2026-09-10)
 
-| Path | Role | Checkout |
-|------|------|----------|
-| Pack **$19** (band $8–25) | Magnet funnel | mailto `nathanplatter@gmail.com` — Magnet Stripe **HOLD** |
-| SettleUp Pilot **$499** | Suite aisle | live [Pilot Payment Link](https://buy.stripe.com/dRm00j0GG53F8dVfO17Vm03) |
+| Path | Role | Next step |
+|------|------|-----------|
+| Process-server pack | Magnet funnel | [Book intro](https://calendly.com/nathanplatter) or mailto `nathanplatter@gmail.com` · Magnet Stripe **HOLD** |
+| SettleUp Pilot | Suite aisle | Same: Book intro or email only |
+
+Book intro / Calendly / mailto only. Do not invent a pack price, Pilot price, Soft ROI, or Stripe Payment Link.
 
 ## Disclaimer (always on-page)
 
@@ -64,10 +68,11 @@ python3 -m http.server 8765
 
 - Desktop (~1280): playbook bar, compare table, dual-mode suite cards, demo happy path + three breaks.
 - iPhone-width (390): stacked compare cards, 44px taps, no horizontal overflow, refuse stamps readable.
+- Price lock: no pack dollars, no Pilot dollars, no Soft ROI that implies what Nathan charges. Book intro / Calendly / mailto only.
 
 ## Status Board fan-out
 
-On merge to `main` / Pages hot: ping Status Board — SERVICE playbook landing live, pack $19 mailto (Stripe HOLD), Pilot $499 live. Nathan lock. Do not treat a Pages deploy as complete until that fan-out happens.
+On merge to `main` / Pages hot: ping Status Board. SERVICE playbook landing live. Book intro / mailto. Magnet Stripe HOLD. No pack / Pilot / Soft ROI dollars. Nathan lock. Do not treat a Pages deploy as complete until that fan-out happens.
 
 ## Explicitly not
 
@@ -76,4 +81,5 @@ On merge to `main` / Pages hot: ping Status Board — SERVICE playbook landing l
 - Common Notice revival
 - LLC / domain inventing
 - Counsel theater or live sufficiency opinions
-- SERVICE pack Stripe (HOLD — mailto only)
+- SERVICE pack Stripe (HOLD)
+- Pack dollars, Pilot dollars, Soft ROI that implies what Nathan charges, or buy.stripe.com CTAs
